@@ -24,7 +24,7 @@ public class DynamoDBConfig {
         return DynamoDbAsyncClient.builder()
                 .credentialsProvider(ProfileCredentialsProvider.create("default"))
                 .region(Region.of(region))
-                .endpointOverride(URI.create(endpoint))
+                //.endpointOverride(URI.create(endpoint))
                 .overrideConfiguration(o -> o.addMetricPublisher(publisher))
                 .build();
     }
