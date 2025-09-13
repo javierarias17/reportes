@@ -11,10 +11,13 @@ import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
 public class DynamoDBTemplateAdapter extends TemplateAdapterOperations<Report, String, ReportEntity>  implements ReportRepository {
+
+    private static final String APPROVED_LOANS_ID="approvedLoans";
 
     public DynamoDBTemplateAdapter(DynamoDbEnhancedAsyncClient connectionFactory, ObjectMapper mapper) {
         /**
@@ -43,21 +46,34 @@ public class DynamoDBTemplateAdapter extends TemplateAdapterOperations<Report, S
     }
 
     @Override
-    public Mono<Report> incrementApprovedLoansCounter(Report report) {
-        return getById(report.getId())
+    public Mono<Report> update(BigDecimal amount) {
+        return getById(APPROVED_LOANS_ID)
                 .flatMap(existing -> {
                     if (existing == null) {
-                        report.setAtr1(1L);
+                        Report report=new Report();
+                        report.setId(APPROVED_LOANS_ID);
+                        report.setTotalLoansCount(1L);
+                        report.setTotalLoanAmount(amount);
                         return save(report);
                     } else {
-                        existing.setAtr1(existing.getAtr1() + 1);
+                        existing.setTotalLoansCount(existing.getTotalLoansCount() + 1);
+                        existing.setTotalLoanAmount(existing.getTotalLoanAmount().add(amount));
                         return save(existing);
                     }
                 });
     }
 
     @Override
-    public Mono<Long> getApprovedLoansCount() {
-        return getById("approvedLoans").map(report -> report != null ? report.getAtr1() : 0L);
+    public Mono<Report> getApprovedLoansCount() {
+        return getById(APPROVED_LOANS_ID).map(report -> {
+            if(report == null) {
+                Report newReport=new Report();
+                newReport.setId(APPROVED_LOANS_ID);
+                newReport.setTotalLoanAmount(new BigDecimal("0"));
+                newReport.setTotalLoansCount(0L);
+                return newReport;
+            }
+            return report;
+        });
     }
 }

@@ -1,6 +1,8 @@
 package co.com.pragma.model.report;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -8,5 +10,6 @@ import lombok.*;
 @Builder(toBuilder = true)
 public class Report {
     private String id;
-    private Long atr1;
+    private Long totalLoansCount;
+    private BigDecimal totalLoanAmount;
 }

@@ -1,8 +1,10 @@
 package co.com.pragma.api;
 
+import co.com.pragma.api.dto.ReportDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
@@ -32,12 +34,18 @@ public class RouterRest {
                                             responseCode = "200",
                                             description = "OK",
                                             content = @Content(
-                                                    mediaType = "text/plain",
+                                                    mediaType = "application/json",
+                                                    schema = @Schema(implementation = ReportDTO.class),
                                                     examples = {
                                                             @ExampleObject(
-                                                                    value = "5"
-                                                            )
-                                                    }
+                                                                    value = """
+                                                                    {
+                                                                     "id": "approvedLoans",
+                                                                     "totalLoansCount": 4,
+                                                                     "totalLoanAmount": 2700000
+                                                                     }
+                                                                    """
+                                                            )}
                                             )),
                                     @ApiResponse(
                                             responseCode = "403",
@@ -58,6 +66,6 @@ public class RouterRest {
     })
     @Bean
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
-        return route(GET("/api/v1/reportes"), handler::listenGetTotalApprovedLoans);
+        return route(GET("/api/v1/reportes"), handler::listenGetReport);
     }
 }

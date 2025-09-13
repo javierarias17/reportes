@@ -2,20 +2,25 @@ package co.com.pragma.dynamodb;
 
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.*;
 
+import java.math.BigDecimal;
+
 /* Enhanced DynamoDB annotations are incompatible with Lombok #1932
          https://github.com/aws/aws-sdk-java-v2/issues/1932*/
 @DynamoDbBean
 public class ReportEntity {
 
     private String id;
-    private Long atr1;
+    private Long totalLoansCount;
+    private BigDecimal totalLoanAmount;
+
 
     public ReportEntity() {
     }
 
-    public ReportEntity(String id, Long atr1) {
+    public ReportEntity(String id, Long totalLoansCount, BigDecimal totalLoanAmount) {
         this.id = id;
-        this.atr1 = atr1;
+        this.totalLoansCount = totalLoansCount;
+        this.totalLoanAmount = totalLoanAmount;
     }
 
     @DynamoDbPartitionKey
@@ -28,12 +33,21 @@ public class ReportEntity {
         this.id = id;
     }
 
-    @DynamoDbAttribute("counter")
-    public Long getAtr1() {
-        return atr1;
+    @DynamoDbAttribute("totalLoansCount")
+    public Long getTotalLoansCount() {
+        return totalLoansCount;
     }
 
-    public void setAtr1(Long atr1) {
-        this.atr1 = atr1;
+    public void setTotalLoansCount(Long totalLoansCount) {
+        this.totalLoansCount = totalLoansCount;
+    }
+
+    @DynamoDbAttribute("totalLoanAmount")
+    public BigDecimal getTotalLoanAmount() {
+        return totalLoanAmount;
+    }
+
+    public void setTotalLoanAmount(BigDecimal totalLoanAmount) {
+        this.totalLoanAmount = totalLoanAmount;
     }
 }
