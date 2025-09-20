@@ -49,31 +49,28 @@ public class DynamoDBTemplateAdapter extends TemplateAdapterOperations<Report, S
     public Mono<Report> update(BigDecimal amount) {
         return getById(APPROVED_LOANS_ID)
                 .flatMap(existing -> {
-                    if (existing == null) {
-                        Report report=new Report();
-                        report.setId(APPROVED_LOANS_ID);
-                        report.setTotalLoansCount(1L);
-                        report.setTotalLoanAmount(amount);
-                        return save(report);
-                    } else {
-                        existing.setTotalLoansCount(existing.getTotalLoansCount() + 1);
-                        existing.setTotalLoanAmount(existing.getTotalLoanAmount().add(amount));
-                        return save(existing);
-                    }
-                });
+                    existing.setTotalLoansCount(existing.getTotalLoansCount() + 1);
+                    existing.setTotalLoanAmount(existing.getTotalLoanAmount().add(amount));
+                    return save(existing);
+                })
+                .switchIfEmpty(Mono.defer(() -> {
+                    Report report = new Report();
+                    report.setId(APPROVED_LOANS_ID);
+                    report.setTotalLoansCount(1L);
+                    report.setTotalLoanAmount(amount);
+                    return save(report);
+                }));
     }
 
     @Override
     public Mono<Report> getApprovedLoansCount() {
-        return getById(APPROVED_LOANS_ID).map(report -> {
-            if(report == null) {
-                Report newReport=new Report();
-                newReport.setId(APPROVED_LOANS_ID);
-                newReport.setTotalLoanAmount(new BigDecimal("0"));
-                newReport.setTotalLoansCount(0L);
-                return newReport;
-            }
-            return report;
-        });
+        return getById(APPROVED_LOANS_ID)
+                .switchIfEmpty(Mono.defer(() -> {
+                    Report newReport = new Report();
+                    newReport.setId(APPROVED_LOANS_ID);
+                    newReport.setTotalLoanAmount(BigDecimal.ZERO);
+                    newReport.setTotalLoansCount(0L);
+                    return Mono.just(newReport);
+                }));
     }
 }

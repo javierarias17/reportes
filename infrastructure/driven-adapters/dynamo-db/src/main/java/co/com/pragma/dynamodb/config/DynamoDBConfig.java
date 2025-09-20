@@ -22,7 +22,7 @@ public class DynamoDBConfig {
                                               @Value("${aws.region}") String region,
                                               MetricPublisher publisher) {
         return DynamoDbAsyncClient.builder()
-                .credentialsProvider(ProfileCredentialsProvider.create("default"))
+                //.credentialsProvider(ProfileCredentialsProvider.create("default"))
                 .region(Region.of(region))
                 //.endpointOverride(URI.create(endpoint))
                 .overrideConfiguration(o -> o.addMetricPublisher(publisher))

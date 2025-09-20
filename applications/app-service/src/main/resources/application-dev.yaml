@@ -1,0 +1,16 @@
+aws:
+  region: "${AWS_DYNAMODB_REGION}"
+
+entrypoint:
+  sqs:
+    region: "${AWS_SQS_REGION}"
+    endpoint: "${AWS_SQS_ENDPOINT}"
+    queueUrl: "${AWS_SQS_APPROVED_LOANS_LISTENER_QUEUE_URL}"
+    waitTimeSeconds: "${AWS_SQS_LISTENER_WAIT_TIME_SECONDS}"
+    maxNumberOfMessages: "${AWS_SQS_LISTENER_MAX_MESSAGES}"
+    visibilityTimeoutSeconds: "${AWS_SQS_LISTENER_VISIBILITY_TIMEOUT}"
+    numberOfThreads: "${AWS_SQS_LISTENER_THREADS}"
+
+jwt:
+  secret: "${JWT_SECRET}"
+  expiration: "${JWT_EXPIRATION}"

@@ -2,7 +2,6 @@ package co.com.pragma.usecase.getreport;
 
 import co.com.pragma.model.report.Report;
 import co.com.pragma.model.report.gateways.ReportRepository;
-import co.com.pragma.usecase.getreport.GetReportUseCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

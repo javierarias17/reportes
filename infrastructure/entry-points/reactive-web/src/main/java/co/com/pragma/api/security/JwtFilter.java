@@ -1,6 +1,6 @@
 package co.com.pragma.api.security;
 
-import co.com.pragma.usecase.exceptions.InvalidTokenException;
+import co.com.pragma.api.exceptions.InvalidTokenException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -12,6 +12,8 @@ import reactor.core.publisher.Mono;
 @Component
 public class JwtFilter implements WebFilter {
 
+    private static final String INTERNAL_HEADER = "X-Internal-Request";
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -20,7 +22,16 @@ public class JwtFilter implements WebFilter {
         if (path.startsWith("/webjars")
                 || path.startsWith("/v3/")
                 || path.startsWith("/swagger-ui/**")
-                || path.startsWith("/swagger-ui.html")) {
+                || path.startsWith("/swagger-ui.html")
+                || path.startsWith("/actuator/health")) {
+            exchange.getAttributes().put("internal", true);
+            return chain.filter(exchange);
+        }
+
+        // TODO Pendiente implementar el cifrado para invocaciones internas
+        String internalHeader = request.getHeaders().getFirst(INTERNAL_HEADER);
+        if ("true".equalsIgnoreCase(internalHeader)) {
+            exchange.getAttributes().put("internal", true);
             return chain.filter(exchange);
         }
 
