@@ -2,9 +2,6 @@ aws:
   dynamodb:
     endpoint: "${AWS_DYNAMODB_ENDPOINT}"
   region: "${AWS_DYNAMODB_REGION}"
-  credentials:
-    access-key: "${AWS_ACCESS_KEY_ID}"
-    secret-key: "${AWS_SECRET_ACCESS_KEY}"
 
 entrypoint:
   sqs:

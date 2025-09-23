@@ -1,5 +1,6 @@
 package co.com.pragma.api.security;
 
+import co.com.pragma.api.dto.JwtSecretDTO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -19,10 +20,11 @@ public class JwtProvider {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtProvider.class);
 
-    @Value("${jwt.secret}")
     private String secret;
-    @Value("${jwt.expiration}")
-    private Integer expiration;
+
+    public JwtProvider(JwtSecretDTO jwtSecretDTO) {
+        this.secret = jwtSecretDTO.secret();
+    }
 
     public Claims getPayload(String token) {
         return Jwts.parser()

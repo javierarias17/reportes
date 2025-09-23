@@ -1,6 +1,3 @@
-aws:
-  region: "${AWS_DYNAMODB_REGION}"
-
 entrypoint:
   sqs:
     region: "${AWS_SQS_REGION}"
@@ -11,6 +8,10 @@ entrypoint:
     visibilityTimeoutSeconds: "${AWS_SQS_LISTENER_VISIBILITY_TIMEOUT}"
     numberOfThreads: "${AWS_SQS_LISTENER_THREADS}"
 
-jwt:
-  secret: "${JWT_SECRET}"
-  expiration: "${JWT_EXPIRATION}"
+aws:
+  region: "${AWS_DYNAMODB_REGION}"
+  secrets:
+    jwt:
+      name: "${AWS_JWT_SECRET_NAME}"
+    deployAws:
+      name: "${AWS_PERSON_SECRET_NAME}"

@@ -1,6 +1,5 @@
 server:
   port: "${SERVER_PORT}"
-
 spring:
   application:
     name: "${SPRING_APPLICATION_NAME}"
@@ -12,7 +11,6 @@ spring:
       path: "${H2_CONSOLE_PATH}"
   profiles:
     active: "${PROFILE_ACTIVE}"
-
 management:
   endpoints:
     web:
@@ -22,7 +20,6 @@ management:
     health:
       probes:
         enabled: true
-
 springdoc:
   api-docs:
     path: "/v3/api-docs"
