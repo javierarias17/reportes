@@ -32,3 +32,5 @@ include ':scheduler'
 project(':scheduler').projectDir = file('./infrastructure/entry-points/scheduler')
 include ':sqs-sender'
 project(':sqs-sender').projectDir = file('./infrastructure/driven-adapters/sqs-sender')
+include ':rest-consumer'
+project(':rest-consumer').projectDir = file('./infrastructure/driven-adapters/rest-consumer')

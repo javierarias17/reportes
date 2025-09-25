@@ -20,6 +20,9 @@ management:
     health:
       probes:
         enabled: true
+  health:
+    circuitbreakers:
+      enabled: true
 springdoc:
   api-docs:
     path: "/v3/api-docs"
@@ -29,3 +32,31 @@ springdoc:
     enabled: true
     try-it-out-enabled: true
   show-actuator: false
+adapter:
+  sqs:
+    region: "${AWS_REGION_SQS_QUEUE}"
+    queueUrl: "${SQS_QUEUE_URL}"
+  restconsumer:
+    timeout: 5000
+    url: "${REST_CONSUMER_AUTENTICACION}"
+resilience4j:
+  circuitbreaker:
+    instances:
+      testGet:
+        registerHealthIndicator: true
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: "2s"
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 10
+        waitDurationInOpenState: "10s"
+      testPost:
+        registerHealthIndicator: true
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: "2s"
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 10
+        waitDurationInOpenState: "10s"
