@@ -25,6 +25,6 @@ public class RestConsumer implements AuthenticationGateway {
                 .uri(ADMIN_EMAILS)
                 .retrieve()
                 .bodyToMono(GetAdminEmailsOutDTO.class)
-                .map(response -> response.lstAdminEmails());
+                .map(GetAdminEmailsOutDTO::lstAdminEmails);
     }
 }

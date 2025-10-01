@@ -65,8 +65,7 @@ class GeneratePerformanceReportUseCaseTest {
         when(authenticationGateway.getAdminEmails()).thenReturn(Mono.error(new RuntimeException("Authentication service unavailable")));
 
         StepVerifier.create(generatePerformanceReportUseCase.execute())
-                .expectErrorMatches(throwable -> 
-                    throwable instanceof PerformanceReportException)
+                .expectErrorMatches(PerformanceReportException.class::isInstance)
                 .verify();
     }
 
@@ -77,8 +76,28 @@ class GeneratePerformanceReportUseCaseTest {
         when(reportRepository.getApprovedLoansCount()).thenReturn(Mono.error(new RuntimeException("Database connection failed")));
 
         StepVerifier.create(generatePerformanceReportUseCase.execute())
-                .expectErrorMatches(throwable ->
-                        throwable instanceof PerformanceReportException)
+                .expectErrorMatches(PerformanceReportException.class::isInstance)
+                .verify();
+    }
+
+    @Test
+    void shouldPropagateMessagePublisherGatewayError() {
+        List<String> adminEmails = List.of(ADMIN_EMAIL_1);
+        Report report = new Report();
+        report.setTotalLoansCount(TOTAL_LOANS_COUNT);
+        report.setTotalLoanAmount(TOTAL_LOAN_AMOUNT);
+
+        when(authenticationGateway.getAdminEmails()).thenReturn(Mono.just(adminEmails));
+        when(reportRepository.getApprovedLoansCount()).thenReturn(Mono.just(report));
+        when(messagePublisherGateway.sendPerformanceReport(
+                report.getTotalLoansCount(), 
+                report.getTotalLoanAmount(),
+                LocalDate.now().format(DateTimeFormatter.ofPattern(EXPECTED_DATE_FORMAT)),
+                adminEmails))
+                .thenReturn(Mono.error(new RuntimeException("Queue service unavailable")));
+
+        StepVerifier.create(generatePerformanceReportUseCase.execute())
+                .expectErrorMatches(PerformanceReportException.class::isInstance)
                 .verify();
     }
 }
